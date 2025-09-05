@@ -8,11 +8,13 @@ on:
       - main
     paths:
       - 'terraform/**'
+      - '.github/workflows/terraform_dev.yml'
   pull_request:
     branches-ignore:
       - main
     paths:
       - 'terraform/**'
+      - '.github/workflows/terraform_dev.yml'
   workflow_dispatch:
   
 
