@@ -35,11 +35,11 @@ jobs:
       - name: Terraform Init
         run: terraform init -backend-config=environments/dev/dev.backend.conf
       - name: Terraform Plan
-        run: terraform plan -var-file=environments/dev.tfvars 
+        run: terraform plan -var-file=environments/dev/dev.tfvars 
       - name: Review Terraform Plan
         uses: trstringer/manual-approval@v1
         with:
           secret: ${{ github.TOKEN }}
           approvers: baldblad
       - name: Terraform Apply
-        run: terraform apply -auto-approve -var-file=environments/dev.tfvars 
+        run: terraform apply -auto-approve -var-file=environments/dev/dev.tfvars 
