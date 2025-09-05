@@ -31,13 +31,13 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
       - name: Terraform Init
-        run: terraform init 
+        run: terraform init -backend-config=environments/dev.backend.conf
       - name: Terraform Plan
-        run: terraform plan -var-file=environments/dev.tfvars -backend-config=environments/dev.backend.conf
+        run: terraform plan -var-file=environments/dev.tfvars 
       - name: Review Terraform Plan
         uses: trstringer/manual-approval@v1
         with:
           secret: ${{ github.TOKEN }}
           approvers: baldblad
       - name: Terraform Apply
-        run: terraform apply -auto-approve -var-file=environments/dev.tfvars -backend-config=environments/dev.backend.conf
+        run: terraform apply -auto-approve -var-file=environments/dev.tfvars 
