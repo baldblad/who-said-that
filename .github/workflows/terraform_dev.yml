@@ -38,6 +38,8 @@ jobs:
         run: terraform plan -var-file=environments/dev/dev.tfvars 
       - name: Review Terraform Plan
         uses: trstringer/manual-approval@v1
+        permissions:
+          issues: write
         with:
           secret: ${{ github.TOKEN }}
           approvers: baldblad
