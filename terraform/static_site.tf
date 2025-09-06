@@ -72,5 +72,8 @@ resource "aws_cloudfront_distribution" "ui_cdn" {
     cloudfront_default_certificate = true
   }
 
-	tags = []
+	tags = {
+		Project = "twss"
+		Env     = var.environment
+	}
 }
