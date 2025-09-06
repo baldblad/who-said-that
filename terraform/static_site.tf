@@ -3,18 +3,33 @@ resource "aws_s3_bucket" "ui_bucket" {
   force_destroy = true
 }
 
-resource "aws_s3_bucket_policy" "ui_bucket_policy" {
+resource "aws_s3_bucket_policy" "allow_cloudfront" {
   bucket = aws_s3_bucket.ui_bucket.id
-  policy = data.aws_iam_policy_document.ui_bucket_policy.json
+  policy = data.aws_iam_policy_document.cloudfront.json
 }
 
-data "aws_iam_policy_document" "ui_bucket_policy" {
+data "aws_iam_policy_document" "cloudfront" {
   statement {
-    actions   = ["s3:GetObject"]
-    resources = ["${aws_s3_bucket.ui_bucket.arn}/*"]
+    sid     = "AllowCloudFrontServicePrincipalReadOnlyAccess"
+    effect  = "Allow"
+    actions = ["s3:GetObject"]
+
+    resources = [
+      aws_s3_bucket.ui_bucket.arn,
+      "${aws_s3_bucket.ui_bucket.arn}/*",
+    ]
+
     principals {
-      type        = "AWS"
-      identifiers = ["*"]
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values = [
+        aws_cloudfront_distribution.ui_cdn.arn
+      ]
     }
   }
 }
