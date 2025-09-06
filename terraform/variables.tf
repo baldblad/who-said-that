@@ -1,11 +1,14 @@
 variable "google_client_id" {
   description = "Google OAuth client ID for Cognito federation."
   type        = string
+  default = "placeholder"
 }
 
 variable "google_client_secret" {
   description = "Google OAuth client secret for Cognito federation."
   type        = string
+  sensitive   = true
+  default = "placeholder"
 }
 
 variable "dynamodb_table_name" {

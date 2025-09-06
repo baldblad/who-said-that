@@ -39,5 +39,11 @@ jobs:
         uses: hashicorp/setup-terraform@v2
       - name: Terraform Init
         run: terraform init -backend-config=environments/dev/dev.backend.conf
+      - name: Zip Lambda Functions
+        run: |
+          cd ../lambda/
+          pip install -r requirements.txt -t .
+          zip -r process_chat.zip .
+          zip -r get_random_message.zip .
       - name: Terraform Apply
         run: terraform apply -auto-approve -var-file=environments/dev/dev.tfvars
