@@ -43,5 +43,10 @@ jobs:
         with:
           secret: ${{ github.TOKEN }}
           approvers: baldblad
+      - name: Zip Lambda Functions
+        run: |           # pip install -r requirements.txt -t .
+          cd ./lambda/
+          zip -r process_chat.zip .
+          zip -r get_random_message.zip .
       - name: Terraform Apply
         run: terraform apply -auto-approve -var-file=environments/dev/dev.tfvars 
