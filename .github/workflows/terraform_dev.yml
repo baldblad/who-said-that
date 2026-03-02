@@ -1,22 +1,12 @@
 name: Terraform Dev
 
+# For prod:
 # Trigger the workflow on push or pull request to the 'terraform' directory
 # Only if the branch is not 'main'
+# For release:
+# Only manual trigger
 on:
-  push:
-    branches-ignore:
-      - main
-    paths:
-      - 'terraform/**'
-      - '.github/workflows/terraform_dev.yml'
-  pull_request:
-    branches-ignore:
-      - main
-    paths:
-      - 'terraform/**'
-      - '.github/workflows/terraform_dev.yml'
   workflow_dispatch:
-  
 
 jobs:
   terraform:
@@ -37,11 +27,11 @@ jobs:
       - name: Terraform Init
         run: terraform init -backend-config=environments/dev/dev.backend.conf
       - name: Terraform Plan
-        run: terraform plan -var-file=environments/dev/dev.tfvars 
+        run: terraform plan -var-file=environments/dev/dev.tfvars
       - name: Review Terraform Plan
         uses: trstringer/manual-approval@v1
         with:
           secret: ${{ github.TOKEN }}
           approvers: baldblad
       - name: Terraform Apply
-        run: terraform apply -auto-approve -var-file=environments/dev/dev.tfvars 
+        run: terraform apply -auto-approve -var-file=environments/dev/dev.tfvars
