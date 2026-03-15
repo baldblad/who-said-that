@@ -23,6 +23,7 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -var-file=environments/dev/dev.tfvars
   terraform-apply:
+    needs: terraform-plan
     runs-on: ubuntu-latest
     environment: dev-infra
     env:
