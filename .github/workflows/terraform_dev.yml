@@ -1,18 +1,12 @@
 name: Terraform Dev
 
-# For prod:
-# Trigger the workflow on push or pull request to the 'terraform' directory
-# Only if the branch is not 'main'
-# For release:
-# Only manual trigger
+# Only manual dispatch for extra security on a public repo
 on:
   workflow_dispatch:
 
 jobs:
-  terraform:
+  terraform-plan:
     runs-on: ubuntu-latest
-    permissions:
-      issues: write # To allow terraform approval workflow
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -28,10 +22,22 @@ jobs:
         run: terraform init -backend-config=environments/dev/dev.backend.conf
       - name: Terraform Plan
         run: terraform plan -var-file=environments/dev/dev.tfvars
-      - name: Review Terraform Plan
-        uses: trstringer/manual-approval@v1
-        with:
-          secret: ${{ github.TOKEN }}
-          approvers: baldblad
+  terraform-apply:
+    needs: terraform-plan
+    runs-on: ubuntu-latest
+    environment: dev-infra
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    defaults:
+      run:
+        working-directory: terraform
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+      - name: Terraform Init
+        run: terraform init -backend-config=environments/dev/dev.backend.conf
       - name: Terraform Apply
         run: terraform apply -auto-approve -var-file=environments/dev/dev.tfvars
