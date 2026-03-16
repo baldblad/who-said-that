@@ -37,6 +37,7 @@ data "aws_iam_policy_document" "cloudfront" {
 resource "aws_cloudfront_distribution" "ui_cdn" {
   origin {
     domain_name = aws_s3_bucket.ui_bucket.bucket_regional_domain_name
+    origin_access_control_id = aws_cloudfront_origin_access_control.ui_cdn
     origin_id   = "static-web.${aws_s3_bucket.ui_bucket.bucket}-origin"
   }
 
@@ -71,9 +72,11 @@ resource "aws_cloudfront_distribution" "ui_cdn" {
   viewer_certificate {
     cloudfront_default_certificate = true
   }
+}
 
-	tags = {
-		Project = "twss"
-		Env     = var.environment
-	}
+resource "aws_cloudfront_origin_access_control" "ui_cdn" {
+  name                              = "ui-oac"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
 }
