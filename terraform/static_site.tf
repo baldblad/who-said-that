@@ -37,7 +37,7 @@ data "aws_iam_policy_document" "cloudfront" {
 resource "aws_cloudfront_distribution" "ui_cdn" {
   origin {
     domain_name = aws_s3_bucket.ui_bucket.bucket_regional_domain_name
-    origin_access_control_id = aws_cloudfront_origin_access_control.ui_cdn
+    origin_access_control_id = aws_cloudfront_origin_access_control.ui_cdn.id
     origin_id   = "static-web.${aws_s3_bucket.ui_bucket.bucket}-origin"
   }
 
